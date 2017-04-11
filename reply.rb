@@ -1,7 +1,6 @@
 require_relative 'questions_db'
 
-class Reply
-  attr_reader :id
+class Reply < TableFinder
   attr_accessor :question_id, :user_id, :parent_reply, :body
 
   def initialize(options)

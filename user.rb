@@ -1,7 +1,6 @@
 require_relative 'questions_db'
 
-class User
-  attr_reader :id
+class User < TableFinder
   attr_accessor :fname, :lname
 
   def initialize(options)
@@ -43,7 +42,7 @@ class User
   def authored_replies
     Reply.find_by_user_id(@id)
   end
-
+  
   def update
     QuestionsDatabase.instance.execute(<<-SQL, @fname, @lname, @id)
       UPDATE
@@ -89,6 +88,21 @@ class User
 
   def liked_questions
     QuestionLike.liked_questions_for_user_id(@id)
+  end
+
+  def average_karma
+    data = QuestionsDatabase.instance.execute(<<-SQL, @id)
+      SELECT
+        COUNT(DISTINCT(question_id)) as num_q, CAST(COUNT(question_likes.id) as FLOAT) as num_likes
+      FROM
+        questions
+      LEFT OUTER JOIN
+        question_likes on question_likes.question_id = questions.id
+      WHERE
+        questions.user_id = ?
+    SQL
+
+    data[0]["num_likes"] / data[0]["num_q"]
   end
 
 end

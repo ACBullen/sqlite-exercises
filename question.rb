@@ -1,6 +1,5 @@
 require_relative 'questions_db'
-class Question
-  attr_reader :id
+class Question < TableFinder
   attr_accessor :user_id, :title, :body
 
   def initialize(options)
@@ -52,6 +51,10 @@ class Question
 
   def self.most_followed(n)
     QuestionFollow.most_followed_questions(n)
+  end
+
+  def self.most_liked(n)
+    QuestionLike.most_liked_questions(n)
   end
 
   def update
