@@ -69,4 +69,26 @@ class User
     QuestionFollow.followed_questions_for_user_id(@id)
   end
 
+  def follow_question(question_id)
+    QuestionsDatabase.instance.execute(<<-SQL, @id, question_id)
+      iNSERT INTO
+        question_follows (user_id, question_id)
+      VALUES
+        (?, ?)
+    SQL
+  end
+
+  def like_question(question_id)
+    QuestionsDatabase.instance.execute(<<-SQL, @id, question_id)
+      iNSERT INTO
+        question_likes (user_id, question_id)
+      VALUES
+        (?, ?)
+      SQL
+  end
+
+  def liked_questions
+    QuestionLike.liked_questions_for_user_id(@id)
+  end
+
 end

@@ -32,4 +32,30 @@ class QuestionFollow
     raise "Nothing found" if data.empty?
     data.map{ |datum| Question.new(datum) }
   end
+
+  def self.most_followed_questions(n)
+    data = QuestionsDatabase.instance.execute(<<-SQL, n)
+      SELECT
+        *
+      FROM
+        questions
+      JOIN
+        (
+        SELECT
+          question_id, COUNT(id) AS num_follows
+        FROM
+          question_follows
+        GROUP BY
+          question_id
+
+        ) as most_followed ON most_followed.question_id = questions.id
+      ORDER BY
+        most_followed.num_follows  DESC
+      LIMIT
+        ?
+    SQL
+
+    raise "ERROR" if data.empty?
+    data.map{ |datum| Question.new(datum) }
+  end
 end
