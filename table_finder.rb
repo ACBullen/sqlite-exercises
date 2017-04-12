@@ -4,10 +4,11 @@ class TableFinder
   attr_reader :id, :table
 
   def initialize; end
-  
+
   def self.table
     self.to_s.tableize
   end
+
   def save
     if @id
       self.update
@@ -38,6 +39,19 @@ class TableFinder
     SQL
     raise "Not in table" if data.empty?
     Question.new(data[0])
+  end
+
+  def self.where(options)
+    columns = options.keys.join(", ")
+
+    data = QuestionsDatabase.instance.execute(<<-SQL)
+      SELECT
+        #{columns}
+      FROM
+        #{self.table}
+
+    SQL
+    data.map { |datum| self.new(datum) }
   end
 
 end
