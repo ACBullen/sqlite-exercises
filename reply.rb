@@ -1,9 +1,10 @@
-require_relative 'questions_db'
+# require_relative 'questions_db'
 
 class Reply < TableFinder
   attr_accessor :question_id, :user_id, :parent_reply, :body
 
   def initialize(options)
+    @table = 'replies'
     @id = options["id"]
     @question_id = options["question_id"]
     @user_id = options["user_id"]

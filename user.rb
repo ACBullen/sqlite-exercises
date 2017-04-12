@@ -1,9 +1,10 @@
-require_relative 'questions_db'
+# require_relative 'questions_db'
 
 class User < TableFinder
   attr_accessor :fname, :lname
 
   def initialize(options)
+    @table = 'users'
     @id = options["id"]
     @fname = options["fname"]
     @lname = options["lname"]
@@ -42,7 +43,7 @@ class User < TableFinder
   def authored_replies
     Reply.find_by_user_id(@id)
   end
-  
+
   def update
     QuestionsDatabase.instance.execute(<<-SQL, @fname, @lname, @id)
       UPDATE
